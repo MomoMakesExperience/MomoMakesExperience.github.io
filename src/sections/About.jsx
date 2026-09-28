@@ -25,11 +25,9 @@ export default function About() {
         <div className="lbl acc">02 · About</div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 56 }}>
-        <div className="about-col" style={{ border: 'none', padding: 0 }}>
-          <p data-reveal className="about-lead">
-            Etudiant en <span className="acc">genie informatique</span>, avec un interet marque pour les <span className="acc">bases de donnees</span>.
-          </p>
-        </div>
+        <p data-reveal className="about-lead">
+          Etudiant en <span className="acc">genie informatique</span>, avec un interet marque pour les <span className="acc">bases de donnees</span>.
+        </p>
         <div className="about-grid">
           <div className="about-cols">
             {COLS.map((c, i) => (
