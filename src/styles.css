@@ -9,7 +9,7 @@
   --photo:grayscale(1) contrast(1.08);
   --py:3vw;--tsy:1;
 }
-@font-face{font-family:'Druk Cond';src:url('assets/fonts/DrukCond-Super.otf') format('opentype');font-weight:900;font-display:swap}
+@font-face{font-family:'Druk Cond';src:url('fonts/DrukCond-Super.otf') format('opentype');font-weight:900;font-display:swap}
 
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);font-family:Archivo,sans-serif}
