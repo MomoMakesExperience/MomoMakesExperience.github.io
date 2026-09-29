@@ -8,19 +8,41 @@ const GMAIL_HREF = 'https://mail.google.com/mail/?view=cm&to=seckmamadou2506@gma
 export default function Contact() {
   useReveal()
   const [form, setForm] = useState({ nom: '', prenom: '', mail: '', msg: '' })
-  const [sent, setSent] = useState(false)
+  const [status, setStatus] = useState('idle') // idle | sending | sent | error
 
   const onChange = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
     const who = [form.prenom, form.nom].filter(Boolean).join(' ')
-    const subject = encodeURIComponent('Contact portfolio · ' + who)
-    const body = encodeURIComponent((form.msg || '') + '\n\n' + who + ' · ' + (form.mail || ''))
-    window.location.href = `mailto:seckmamadou2506@gmail.com?subject=${subject}&body=${body}`
-    setSent(true)
-    setTimeout(() => setSent(false), 2500)
+    setStatus('sending')
+    try {
+      const res = await fetch('https://formsubmit.co/ajax/seckmamadou2506@gmail.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          Nom: form.nom,
+          Prénom: form.prenom,
+          Email: form.mail,
+          Message: form.msg,
+          _subject: 'Contact portfolio · ' + who,
+          _captcha: 'false',
+        }),
+      })
+      if (!res.ok) throw new Error('bad status')
+      setForm({ nom: '', prenom: '', mail: '', msg: '' })
+      setStatus('sent')
+    } catch {
+      // Repli si le service est injoignable : ouvre la messagerie du visiteur
+      const subject = encodeURIComponent('Contact portfolio · ' + who)
+      const body = encodeURIComponent((form.msg || '') + '\n\n' + who + ' · ' + (form.mail || ''))
+      window.location.href = `mailto:seckmamadou2506@gmail.com?subject=${subject}&body=${body}`
+      setStatus('error')
+    }
+    setTimeout(() => setStatus('idle'), 3000)
   }
+
+  const sendLabel = { idle: 'Envoyer', sending: 'Envoi en cours…', sent: 'Message envoyé ✓', error: 'Ouverture de la messagerie…' }[status]
 
   return (
     <section id="Contact" className="contact-wrap" data-screen-label="09 Contact">
@@ -94,7 +116,7 @@ export default function Contact() {
             <label className="field">Votre message
               <textarea rows="5" value={form.msg} onChange={onChange('msg')} />
             </label>
-            <button type="submit" className="send-btn">{sent ? 'Ouverture de la messagerie…' : 'Envoyer'}</button>
+            <button type="submit" className="send-btn" disabled={status === 'sending'}>{sendLabel}</button>
           </form>
         </div>
 
