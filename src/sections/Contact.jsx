@@ -4,23 +4,48 @@ import { useReveal } from '../hooks/useReveal'
 const WA_HREF = 'https://wa.me/221771934180?text=Bonjour%20Mamadou%2C%20j%27ai%20d%C3%A9couvert%20votre%20portfolio%20et%20j%27aimerais%20collaborer%20avec%20vous.%20Pouvons-nous%20en%20discuter%20%3F'
 const LI_HREF = 'https://www.linkedin.com/in/mamadouseck2025/'
 const GMAIL_HREF = 'https://mail.google.com/mail/?view=cm&to=seckmamadou2506@gmail.com'
+const WEB3FORMS_KEY = '13d4fd35-8610-4834-bc10-45ffe704d9fa'
 
 export default function Contact() {
   useReveal()
   const [form, setForm] = useState({ nom: '', prenom: '', mail: '', msg: '' })
-  const [sent, setSent] = useState(false)
+  const [status, setStatus] = useState('idle') // idle | sending | sent | error
 
   const onChange = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
     const who = [form.prenom, form.nom].filter(Boolean).join(' ')
-    const subject = encodeURIComponent('Contact portfolio · ' + who)
-    const body = encodeURIComponent((form.msg || '') + '\n\n' + who + ' · ' + (form.mail || ''))
-    window.location.href = `mailto:seckmamadou2506@gmail.com?subject=${subject}&body=${body}`
-    setSent(true)
-    setTimeout(() => setSent(false), 2500)
+    setStatus('sending')
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: 'Contact portfolio · ' + who,
+          name: who,
+          nom: form.nom,
+          prenom: form.prenom,
+          email: form.mail,
+          message: form.msg,
+        }),
+      })
+      const json = await res.json()
+      if (!res.ok || !json.success) throw new Error(json.message || 'echec')
+      setForm({ nom: '', prenom: '', mail: '', msg: '' })
+      setStatus('sent')
+    } catch {
+      // Repli si le service est injoignable : ouvre la messagerie du visiteur
+      const subject = encodeURIComponent('Contact portfolio · ' + who)
+      const body = encodeURIComponent((form.msg || '') + '\n\n' + who + ' · ' + (form.mail || ''))
+      window.location.href = `mailto:seckmamadou2506@gmail.com?subject=${subject}&body=${body}`
+      setStatus('error')
+    }
+    setTimeout(() => setStatus('idle'), 3000)
   }
+
+  const sendLabel = { idle: 'Envoyer', sending: 'Envoi en cours…', sent: 'Message envoyé ✓', error: 'Ouverture de la messagerie…' }[status]
 
   return (
     <section id="Contact" className="contact-wrap" data-screen-label="09 Contact">
@@ -94,7 +119,7 @@ export default function Contact() {
             <label className="field">Votre message
               <textarea rows="5" value={form.msg} onChange={onChange('msg')} />
             </label>
-            <button type="submit" className="send-btn">{sent ? 'Ouverture de la messagerie…' : 'Envoyer'}</button>
+            <button type="submit" className="send-btn" disabled={status === 'sending'}>{sendLabel}</button>
           </form>
         </div>
 
