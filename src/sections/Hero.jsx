@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { HERO_AVG_TXT, HERO_AVG_PCT } from '../data/grades'
+import { useMediaQuery } from '../hooks/useMediaQuery'
 
 const TITLE = 'PORTFOLIO'
 const ROLE = 'Software Engineer Student'
@@ -13,6 +14,9 @@ export default function Hero() {
   const photoRef = useRef(null)
   const [typed, setTyped] = useState('')
   const [photoOn, setPhotoOn] = useState(false)
+  // Vrai uniquement sur un appareil à souris : évite qu'un tap tactile ne
+  // déclenche aussi la détection au survol (ce qui annulerait le tap).
+  const hasMouse = useMediaQuery('(hover: hover) and (pointer: fine)')
 
   // Le titre remplit exactement la largeur disponible
   useLayoutEffect(() => {
@@ -69,6 +73,7 @@ export default function Hero() {
   // Zoom photo : la photo passe en couleur et zoome légèrement quand la
   // souris passe dessus ; le titre, lui, ne bouge pas.
   const onMove = (e) => {
+    if (!hasMouse) return
     const img = photoRef.current
     if (!img) return
     const r = img.getBoundingClientRect()
@@ -76,9 +81,10 @@ export default function Hero() {
       e.clientY > r.top + r.height * 0.1 && e.clientY < r.bottom
     setPhotoOn((prev) => (prev === on ? prev : on))
   }
-  const onLeave = () => setPhotoOn(false)
-  // Sur mobile (pas de souris) : un tap bascule la photo en couleur
-  const onTapPhoto = () => setPhotoOn((v) => !v)
+  const onLeave = () => { if (hasMouse) setPhotoOn(false) }
+  // Sur mobile (pas de souris) : un tap bascule la photo en couleur, un
+  // second tap la repasse en noir et blanc.
+  const onTapPhoto = () => { if (!hasMouse) setPhotoOn((v) => !v) }
 
   return (
     <div ref={heroRef} className="hero" onMouseMove={onMove} onMouseLeave={onLeave} data-screen-label="01 Hero">
@@ -130,7 +136,15 @@ export default function Hero() {
               ref={photoRef}
               src="assets/portrait-v2.png"
               alt="Portrait de Momo Seck, bras croisés, t-shirt noir"
-              style={{ filter: photoOn ? 'grayscale(0) saturate(.7) contrast(1.08)' : 'grayscale(1) contrast(1.08)' }}
+              draggable={false}
+              onContextMenu={(e) => e.preventDefault()}
+              style={{
+                filter: photoOn ? 'grayscale(0) saturate(.7) contrast(1.08)' : 'grayscale(1) contrast(1.08)',
+                WebkitTouchCallout: 'none',
+                WebkitUserSelect: 'none',
+                userSelect: 'none',
+                pointerEvents: 'none',
+              }}
             />
           </div>
         </div>
