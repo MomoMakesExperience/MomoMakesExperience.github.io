@@ -402,11 +402,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--acc2);outline-offse
   /* About */
   .about{padding:40px 20px 96px;gap:24px}
   .about-lead{font-size:clamp(40px,12.4vw,62px)}
-  .about-grid{grid-template-columns:1fr;gap:32px}
-  .about-cols{gap:24px}
-  .about-col{padding-top:18px;gap:12px}
-  .about-col p{font-size:16px}
-  .sql-card{font-size:13px}
+  .about-grid{grid-template-columns:1fr;gap:32px;min-width:0}
+  .about-cols{gap:24px;min-width:0}
+  .about-col{padding-top:18px;gap:12px;min-width:0}
+  .about-col p{font-size:16px;text-wrap:wrap;overflow-wrap:break-word}
+  .sql-card{font-size:13px;min-width:0}
   .sql-row{grid-template-columns:1fr;gap:4px;padding:10px 16px}
   .sql-row span:last-child{font-size:14px}
 
