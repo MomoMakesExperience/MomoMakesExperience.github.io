@@ -2,7 +2,7 @@ import { useReveal } from '../hooks/useReveal'
 import { JOURNEY } from '../data/journey'
 
 const ST_LINE = ['var(--acc)', 'linear-gradient(90deg,var(--acc) 55%,var(--line) 55%)', 'var(--line)']
-const ST_INK = ['var(--ink)', 'var(--acc)', 'var(--ink)']
+const ST_RAIL = ['var(--acc)', 'linear-gradient(var(--acc) 50%,var(--line) 50%)', 'linear-gradient(var(--line) 34px,transparent 34px)']
 
 export default function Journey() {
   useReveal()
@@ -29,6 +29,32 @@ export default function Journey() {
                   {j.st === 1 && <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--acc)', animation: 'pulse 1.8s ease-out infinite' }} />}
                   <span className={`journey-tag${j.st === 2 ? ' dashed' : ''}`}>{j.tag}</span>
                 </div>
+                {j.place && <span className="journey-place">{j.place}</span>}
+                <p>{j.text}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        {/* Version mobile : timeline verticale avec rail à gauche */}
+        <div className="journey-mobile">
+          {JOURNEY.map((j) => (
+            <article key={j.n} className="jm-item">
+              <div className="jm-rail">
+                <span className="line" style={{ background: ST_RAIL[j.st] }} />
+                <span
+                  className="dot"
+                  style={{
+                    borderStyle: j.st === 2 ? 'dashed' : 'solid',
+                    background: j.st === 2 ? 'var(--bg)' : 'var(--acc)',
+                    animation: j.st === 1 ? 'pulse 1.8s ease-out infinite' : 'none',
+                  }}
+                />
+              </div>
+              <div className="jm-body">
+                <span className="n">{j.n}</span>
+                <h3 style={{ color: j.st === 1 ? 'var(--acc)' : 'var(--ink)' }}>{j.titlePlain}</h3>
+                <span className={`journey-tag${j.st === 2 ? ' dashed' : ''}`}>{j.tag}</span>
                 {j.place && <span className="journey-place">{j.place}</span>}
                 <p>{j.text}</p>
               </div>

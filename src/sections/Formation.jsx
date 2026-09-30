@@ -69,6 +69,55 @@ export default function Formation() {
             </div>
           </div>
         </div>
+
+        {/* Version mobile : sélecteur en onglets 6 colonnes + navigation */}
+        <div className="formation-mobile">
+          <div role="tablist" className="sem-tabs">
+            {SEMESTERS.map((m, i) => {
+              const active = i === sel
+              return (
+                <button
+                  key={m.code}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setSel(i)}
+                  className={`sem-tab${active ? ' active' : ''}`}
+                >
+                  <span className="sdot" style={{ borderStyle: m.st === 2 ? 'dashed' : 'solid', background: active ? 'var(--bg)' : m.st === 0 ? 'var(--acc)' : 'transparent', animation: m.st === 1 && !active ? 'pulse 1.8s ease-out infinite' : 'none' }} />
+                  <span className="snum">S{m.num}</span>
+                </button>
+              )
+            })}
+          </div>
+
+          <div className="sem-detail">
+            <span className="big">Semestre <span className="acc">{s.num}</span></span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <div className="sem-meta">
+                <span className="status-chip" style={{ borderStyle: s.st === 2 ? 'dashed' : 'solid' }}>{s.status}</span>
+                <span className="cred">{s.credits} crédits</span>
+                <span className={`avg${s.hasAvg ? ' has' : ''}`}>Moyenne <strong>{s.avg}</strong></span>
+              </div>
+              <h3>{s.tag}</h3>
+              <p>{s.text}</p>
+              <div className="sem-modules">
+                <span className="lbl">Modules du semestre</span>
+                <div className="mod-grid">
+                  {s.modules.map((md) => (
+                    <span key={md.n} className="mod-chip">
+                      <span className="n">{md.n}</span>{md.t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="sem-nav">
+                <button type="button" className="sem-nav-btn" disabled={sel === 0} onClick={() => setSel((v) => Math.max(0, v - 1))}>← Précédent</button>
+                <button type="button" className="sem-nav-btn" disabled={sel === 5} onClick={() => setSel((v) => Math.min(5, v + 1))}>Suivant<span>→</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   )

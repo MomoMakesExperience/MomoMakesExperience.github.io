@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import MobileHeader from './sections/MobileHeader.jsx'
 import Hero from './sections/Hero.jsx'
 import Manifesto from './sections/Manifesto.jsx'
 import About from './sections/About.jsx'
@@ -36,6 +37,7 @@ export default function App() {
   return (
     <div className="page">
       <div ref={progRef} className="progress" />
+      <MobileHeader />
       <Hero />
       <Manifesto />
       <About />

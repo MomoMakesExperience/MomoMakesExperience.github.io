@@ -77,10 +77,17 @@ export default function Hero() {
     setPhotoOn((prev) => (prev === on ? prev : on))
   }
   const onLeave = () => setPhotoOn(false)
+  // Sur mobile (pas de souris) : un tap bascule la photo en couleur
+  const onTapPhoto = () => setPhotoOn((v) => !v)
 
   return (
     <div ref={heroRef} className="hero" onMouseMove={onMove} onMouseLeave={onLeave} data-screen-label="01 Hero">
       <div className="grid-bg"><div /><div /><div /><div /><div /><div /></div>
+
+      <div className="mob-toprow">
+        <span className="loc"><span className="dot" />Saint-Louis, Sénégal</span>
+        <span>UGB</span>
+      </div>
 
       <header className="header">
         <a href="#Accueil" className="logo">
@@ -109,7 +116,14 @@ export default function Hero() {
           </h1>
         </div>
 
-        <div className="photo-wrap" style={{ transform: photoOn ? 'translate3d(0,-6px,0) scale(1.04)' : 'none', transformOrigin: '50% 100%', transition: 'transform .45s cubic-bezier(.2,.8,.2,1.4)' }}>
+        <div
+          className="photo-wrap"
+          onClick={onTapPhoto}
+          role="button"
+          tabIndex={0}
+          aria-label="Afficher la photo en couleur"
+          style={{ transform: photoOn ? 'translate3d(0,-6px,0) scale(1.04)' : 'none', transformOrigin: '50% 100%', transition: 'transform .45s cubic-bezier(.2,.8,.2,1.4)', cursor: 'pointer' }}
+        >
           <div className="glow" />
           <div className="photo">
             <img
