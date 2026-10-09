@@ -364,8 +364,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--acc2);outline-offse
   .grid-bg{grid-template-columns:repeat(4,minmax(0,1fr));padding:0 20px}
   .grid-bg div:nth-child(n+5){display:none}
 
-  .hero{min-height:100svh}
-  .main{padding:0 20px}
+  .hero{height:auto;min-height:100svh}
+  .main{flex:1 0 auto;padding:0 20px}
   .title-wrap{margin-top:4px;padding:0}
   .title{margin:0}
 
